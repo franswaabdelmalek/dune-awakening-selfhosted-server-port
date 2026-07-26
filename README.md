@@ -23,5 +23,5 @@ Script is tested in Windows WSL - Ubuntu destro. However could work with other d
 2. ensure k3s and steamcmd are installed (they must be installed in WSL)
 3. Open a windows terminal and run ```wsl``
 4. Navigate to the repo's folder
-5. run ```./dune-server-setup.sh -h``` to see available options. First time, run ```./dune-server-setup.sh -s``` to download/update game server files from Steam.
+5. run ```./dune-server-setup.sh -h``` to see available options. First time, run ```./dune-server-setup.sh -s``` to download/update game server files from Steam. Game server files are download to ```download``` folder in the repo's folder.
 6. Follow the script instructions. it will ask for self hosted token that is generated from our account page https://account.duneawakening.com/
