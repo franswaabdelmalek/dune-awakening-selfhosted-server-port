@@ -13,7 +13,7 @@ Script is tested in Windows WSL - Ubuntu destro. However could work with other d
 - Services tested only as a solo/single player, further configuration on you machine and/or router may be needed to allow other players (on local network or public) to join your server
 
 ## Requirements
-- Windows 10 machine with WSL enabled. Ubuntu (Linux distro with systemd service manager) should be fine, though not tested.
+- Windows 10 machine with WSL enabled (Ubuntu). Ubuntu machines (or other Linux distro with systemd service manager) should be fine, though not tested.
 - k3s and steamcmd installed. when using WSL, ensure they are installed in WSL.
 - Game maps rely on a custom sheduler, memory-focused-scheduler. The script takes care of its configuration if you have k3s installation without any custom configuration. If you do, you will need to check the configs under ```all_k3s_resources/k3s_configs``` and incorporate it with your cluster configs.
 
