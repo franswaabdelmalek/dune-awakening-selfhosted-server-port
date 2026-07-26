@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cert-manager.io/v1","kind":"Certificate","metadata":{"annotations":{},"name":"battlegroupoperator-serving-cert","namespace":"funcom-operators"},"spec":{"dnsNames":["battlegroupoperator-webhook-svc.funcom-operators.svc","battlegroupoperator-webhook-svc.funcom-operators.svc.cluster.local"],"issuerRef":{"kind":"Issuer","name":"operators-selfsigned-issuer"},"secretName":"battlegroupoperator-webhook-server-cert"}}
+  name: battlegroupoperator-serving-cert
+  namespace: funcom-operators
+spec:
+  dnsNames:
+  - battlegroupoperator-webhook-svc.funcom-operators.svc
+  - battlegroupoperator-webhook-svc.funcom-operators.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: operators-selfsigned-issuer
+  secretName: battlegroupoperator-webhook-server-cert

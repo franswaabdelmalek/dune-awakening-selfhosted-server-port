@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "7"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"control-plane":"database-controller-manager"},"name":"databaseoperator-controller-manager","namespace":"funcom-operators"},"spec":{"replicas":0,"selector":{"matchLabels":{"control-plane":"database-controller-manager"}},"template":{"metadata":{"annotations":{"kubectl.kubernetes.io/default-container":"manager"},"labels":{"control-plane":"database-controller-manager"}},"spec":{"containers":[{"args":["--leader-elect","--zap-devel=false","--zap-log-level=debug","--zap-time-encoding=iso8601","--db-max-concurrent=2","--dbdepl-max-concurrent=2","--dbutil-max-concurrent=2","--dbop-max-concurrent=2","--dbb-max-concurrent=2","--dbbs-max-concurrent=2","--dbr-max-concurrent=2","--dbm-max-concurrent=2"],"command":["/app/operator"],"env":[{"name":"GOMEMLIMIT","valueFrom":{"resourceFieldRef":{"resource":"limits.memory"}}},{"name":"GOMAXPROCS","valueFrom":{"resourceFieldRef":{"resource":"requests.cpu"}}}],"image":"local/funcom/igw-k8s-database-operator:v1.3.0","imagePullPolicy":"Always","livenessProbe":{"httpGet":{"path":"/healthz","port":8081},"initialDelaySeconds":15,"periodSeconds":20},"name":"manager","ports":[{"containerPort":9443,"name":"webhook-server","protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/readyz","port":8081},"initialDelaySeconds":5,"periodSeconds":10},"resources":{"limits":{"memory":"4Gi"},"requests":{"cpu":2}},"securityContext":{"allowPrivilegeEscalation":false},"volumeMounts":[{"mountPath":"/tmp/k8s-webhook-server/serving-certs","name":"cert","readOnly":true}]},{"args":["--secure-listen-address=0.0.0.0:8443","--upstream=http://127.0.0.1:8080/","--logtostderr=true","--v=10"],"image":"gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0","name":"kube-rbac-proxy","ports":[{"containerPort":8443,"name":"https","protocol":"TCP"}]}],"nodeSelector":{"node.funcom.com/workload":"infrastructure"},"securityContext":{"runAsNonRoot":true},"serviceAccountName":"databaseoperator-controller-manager","terminationGracePeriodSeconds":10,"tolerations":[{"key":"node.funcom.com/infrastructure","operator":"Exists"},{"key":"node-role.kubernetes.io/master","operator":"Exists"}],"volumes":[{"name":"cert","secret":{"defaultMode":420,"secretName":"databaseoperator-webhook-server-cert"}}]}}}}
+  labels:
+    control-plane: database-controller-manager
+  name: databaseoperator-controller-manager
+  namespace: funcom-operators
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      control-plane: database-controller-manager
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: database-controller-manager
+    spec:
+      containers:
+      - args:
+        - --leader-elect
+        - --zap-devel=false
+        - --zap-log-level=debug
+        - --zap-time-encoding=iso8601
+        - --db-max-concurrent=1
+        - --dbdepl-max-concurrent=1
+        - --dbutil-max-concurrent=1
+        - --dbop-max-concurrent=1
+        - --dbb-max-concurrent=1
+        - --dbbs-max-concurrent=1
+        - --dbr-max-concurrent=1
+        - --dbm-max-concurrent=1
+        - --dbutil-supports-prometheus=false
+        command:
+        - /app/operator
+        image: registry.funcom.com/funcom/self-hosting/igw-k8s-database-operator:v1.3.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readyz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        image: bitnami/kube-rbac-proxy:latest
+        imagePullPolicy: IfNotPresent
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsNonRoot: true
+      serviceAccount: databaseoperator-controller-manager
+      serviceAccountName: databaseoperator-controller-manager
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: databaseoperator-webhook-server-cert

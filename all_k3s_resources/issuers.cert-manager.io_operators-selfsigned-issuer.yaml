@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cert-manager.io/v1","kind":"Issuer","metadata":{"annotations":{},"name":"operators-selfsigned-issuer","namespace":"funcom-operators"},"spec":{"selfSigned":{}}}
+  name: operators-selfsigned-issuer
+  namespace: funcom-operators
+spec:
+  selfSigned: {}

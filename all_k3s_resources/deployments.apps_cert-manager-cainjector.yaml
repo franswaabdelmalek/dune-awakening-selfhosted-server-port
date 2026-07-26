@@ -1,0 +1,64 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   annotations:
+#     deployment.kubernetes.io/revision: "2"
+#     kubectl.kubernetes.io/last-applied-configuration: |
+#       {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"cainjector","app.kubernetes.io/component":"cainjector","app.kubernetes.io/instance":"cert-manager","app.kubernetes.io/name":"cainjector","app.kubernetes.io/version":"v1.8.0"},"name":"cert-manager-cainjector","namespace":"cert-manager"},"spec":{"replicas":0,"selector":{"matchLabels":{"app.kubernetes.io/component":"cainjector","app.kubernetes.io/instance":"cert-manager","app.kubernetes.io/name":"cainjector"}},"template":{"metadata":{"labels":{"app":"cainjector","app.kubernetes.io/component":"cainjector","app.kubernetes.io/instance":"cert-manager","app.kubernetes.io/name":"cainjector","app.kubernetes.io/version":"v1.8.0"}},"spec":{"containers":[{"args":["--v=2","--leader-election-namespace=kube-system"],"env":[{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}}],"image":"quay.io/jetstack/cert-manager-cainjector:v1.8.0","imagePullPolicy":"IfNotPresent","name":"cert-manager","securityContext":{"allowPrivilegeEscalation":false}}],"nodeSelector":{"kubernetes.io/os":"linux","node.funcom.com/workload":"infrastructure"},"securityContext":{"runAsNonRoot":true},"serviceAccountName":"cert-manager-cainjector","tolerations":[{"key":"node.funcom.com/infrastructure","operator":"Exists"},{"key":"node-role.kubernetes.io/master","operator":"Exists"}]}}}}
+#   labels:
+#     app: cainjector
+#     app.kubernetes.io/component: cainjector
+#     app.kubernetes.io/instance: cert-manager
+#     app.kubernetes.io/name: cainjector
+#     app.kubernetes.io/version: v1.8.0
+#   name: cert-manager-cainjector
+#   namespace: cert-manager
+# spec:
+#   progressDeadlineSeconds: 600
+#   replicas: 1
+#   revisionHistoryLimit: 10
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/component: cainjector
+#       app.kubernetes.io/instance: cert-manager
+#       app.kubernetes.io/name: cainjector
+#   strategy:
+#     rollingUpdate:
+#       maxSurge: 25%
+#       maxUnavailable: 25%
+#     type: RollingUpdate
+#   template:
+#     metadata:
+#       labels:
+#         app: cainjector
+#         app.kubernetes.io/component: cainjector
+#         app.kubernetes.io/instance: cert-manager
+#         app.kubernetes.io/name: cainjector
+#         app.kubernetes.io/version: v1.8.0
+#     spec:
+#       containers:
+#       - args:
+#         - --v=2
+#         - --leader-election-namespace=kube-system
+#         env:
+#         - name: POD_NAMESPACE
+#           valueFrom:
+#             fieldRef:
+#               apiVersion: v1
+#               fieldPath: metadata.namespace
+#         image: quay.io/jetstack/cert-manager-cainjector:v1.8.0
+#         imagePullPolicy: IfNotPresent
+#         name: cert-manager
+#         resources: {}
+#         securityContext:
+#           allowPrivilegeEscalation: false
+#         terminationMessagePath: /dev/termination-log
+#         terminationMessagePolicy: File
+#       dnsPolicy: ClusterFirst
+#       restartPolicy: Always
+#       schedulerName: default-scheduler
+#       securityContext:
+#         runAsNonRoot: true
+#       serviceAccount: cert-manager-cainjector
+#       serviceAccountName: cert-manager-cainjector
+#       terminationGracePeriodSeconds: 30

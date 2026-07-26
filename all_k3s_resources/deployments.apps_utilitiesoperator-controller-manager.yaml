@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "6"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"control-plane":"utilities-controller-manager"},"name":"utilitiesoperator-controller-manager","namespace":"funcom-operators"},"spec":{"replicas":0,"selector":{"matchLabels":{"control-plane":"utilities-controller-manager"}},"template":{"metadata":{"annotations":{"kubectl.kubernetes.io/default-container":"manager"},"labels":{"control-plane":"utilities-controller-manager"}},"spec":{"containers":[{"args":["--leader-elect","--zap-devel=false","--zap-log-level=debug","--zap-time-encoding=iso8601","--sgw-max-concurrent=2","--bgd-max-concurrent=2","--fb-max-concurrent=1","--mq-max-concurrent=2","--tr-max-concurrent=2"],"command":["/app/operator"],"env":[{"name":"GOMEMLIMIT","valueFrom":{"resourceFieldRef":{"resource":"limits.memory"}}},{"name":"GOMAXPROCS","valueFrom":{"resourceFieldRef":{"resource":"requests.cpu"}}}],"image":"local/funcom/igw-k8s-utilities-operator:v1.3.0","imagePullPolicy":"Always","livenessProbe":{"httpGet":{"path":"/healthz","port":8081},"initialDelaySeconds":15,"periodSeconds":20},"name":"manager","ports":[{"containerPort":9443,"name":"webhook-server","protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/readyz","port":8081},"initialDelaySeconds":5,"periodSeconds":10},"resources":{"limits":{"memory":"4Gi"},"requests":{"cpu":2}},"securityContext":{"allowPrivilegeEscalation":false},"volumeMounts":[{"mountPath":"/tmp/k8s-webhook-server/serving-certs","name":"cert","readOnly":true}]},{"args":["--secure-listen-address=0.0.0.0:8443","--upstream=http://127.0.0.1:8080/","--logtostderr=true","--v=10"],"image":"gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0","name":"kube-rbac-proxy","ports":[{"containerPort":8443,"name":"https","protocol":"TCP"}]}],"nodeSelector":{"node.funcom.com/workload":"infrastructure"},"securityContext":{"runAsNonRoot":true},"serviceAccountName":"utilitiesoperator-controller-manager","terminationGracePeriodSeconds":10,"tolerations":[{"key":"node.funcom.com/infrastructure","operator":"Exists"},{"key":"node-role.kubernetes.io/master","operator":"Exists"}],"volumes":[{"name":"cert","secret":{"defaultMode":420,"secretName":"utilitiesoperator-webhook-server-cert"}}]}}}}
+  creationTimestamp: "2026-03-18T07:41:14Z"
+  generation: 7
+  labels:
+    control-plane: utilities-controller-manager
+  name: utilitiesoperator-controller-manager
+  namespace: funcom-operators
+  resourceVersion: "294306"
+  uid: a3b132f2-1126-452a-b6ad-594c7dc80785
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      control-plane: utilities-controller-manager
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: utilities-controller-manager
+    spec:
+      containers:
+      - args:
+        - --leader-elect
+        - --zap-devel=false
+        - --zap-log-level=debug
+        - --zap-time-encoding=iso8601
+        - --sgw-max-concurrent=2
+        - --bgd-max-concurrent=2
+        - --fb-max-concurrent=1
+        - --mq-max-concurrent=2
+        - --tr-max-concurrent=2
+        command:
+        - /app/operator
+        image: registry.funcom.com/funcom/self-hosting/igw-k8s-utilities-operator:v1.3.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readyz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        image: bitnami/kube-rbac-proxy:latest
+        imagePullPolicy: IfNotPresent
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsNonRoot: true
+      serviceAccount: utilitiesoperator-controller-manager
+      serviceAccountName: utilitiesoperator-controller-manager
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: utilitiesoperator-webhook-server-cert
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2026-03-18T07:41:14Z"
+    lastUpdateTime: "2026-07-24T09:16:11Z"
+    message: ReplicaSet "utilitiesoperator-controller-manager-6f848fbbfd" has successfully
+      progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-07-24T14:34:51Z"
+    lastUpdateTime: "2026-07-24T14:34:51Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 7
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

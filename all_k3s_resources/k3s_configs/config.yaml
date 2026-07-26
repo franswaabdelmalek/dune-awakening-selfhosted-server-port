@@ -1,0 +1,5 @@
+kube-scheduler-arg: "config=/etc/rancher/k3s/scheduler.yaml"
+kubelet-arg:
+- "eviction-hard=memory.available<100Mi,nodefs.available<1%,nodefs.inodesFree<1%,imagefs.available<1%,imagefs.inodesFree<1%"
+- image-gc-high-threshold=99
+- image-gc-low-threshold=98
