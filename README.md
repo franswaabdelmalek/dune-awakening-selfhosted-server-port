@@ -1,7 +1,7 @@
 # Dune Awakening self hosted server port
 Porting the game server to run in Ubuntu or Windows WSL avoiding the need for VMs.
 The purpose is to make it possible to deploy the kubernetes server app in a Linux machine directly without the need to use Hyper-V VM provided by the game developer.
-This also should open other possibilties to host the server in other kubernetes PAAS services, e.g. AKS, AWS and GCP.
+This also should open other possibilties to host the server.
 
 ## Suppoerted Systems
 Script is tested in Windows WSL - Ubuntu destro. However could work with other distros that uses systemd service manager.
