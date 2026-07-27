@@ -80,12 +80,10 @@ if ! ([ -f "$K3S_CONFIG_DIR/config.yaml" ] || [ -f "$K3S_CONFIG_DIR/scheduler.ya
 
     sudo systemctl stop k3s
 
-    sudo cp "$G_SCRIPT_PATH/all_k3s_resources/k3s_configs/config.yaml" "$K3S_CONFIG_DIR/config.yaml"
-    sudo cp "$G_SCRIPT_PATH/all_k3s_resources/k3s_configs/scheduler.yaml" "$K3S_CONFIG_DIR/scheduler.yaml"
+    sudo cp -r $G_SCRIPT_PATH/all_k3s_resources/k3s_configs/* $K3S_CONFIG_DIR
 
     sudo systemctl start k3s
 fi
-
 
 # download server client from Steam
 if $RUN_STEAM_INSTALL || $RUN_STEAM_INSTALL_ONLY ; then
