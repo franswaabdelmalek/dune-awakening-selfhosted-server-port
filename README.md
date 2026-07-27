@@ -4,7 +4,7 @@ The purpose is to make it possible to deploy the kubernetes server app in a Linu
 This also should open more possibilties and options to host the server.
 
 ## Suppoerted Systems
-Script is tested in Windows WSL - Ubuntu destro. However could work with other distros that uses systemd service manager.
+Script is tested in Windows WSL - Ubuntu distro. However could work with other distros that uses systemd service manager.
 
 ## Suported Features
 - Script supports server (Battlegroup) installation, then you can use battlegroup.sh script in the sever's download folder to start/stop/status check the battlegroups.
